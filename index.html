@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snowflake Quiz</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+<header class="top">
+  <div><div class="eyebrow">CERTIFICATION PRACTICE</div><h1>Snowflake Quiz</h1></div>
+  <div class="counter" id="counter">Loading…</div>
+</header>
+<div class="track"><div id="progress"></div></div>
+<section class="card">
+  <div class="label">QUESTION <span id="num">—</span></div>
+  <h2 id="question">Loading questions…</h2>
+  <div id="selectionHint" class="selectionHint"></div>
+  <div id="options" class="options"></div>
+  <div id="answerPanel" class="answer hidden">
+    <div class="answerTitle"><span>✓</span> Correct Answer</div>
+    <div id="correct" class="correct"></div>
+    <div id="explanation" class="explanation"></div>
+  </div>
+  <div class="actions">
+    <button id="prev" class="secondary">← Previous</button>
+    <button id="show" class="primary">Show Answer</button>
+    <button id="next" class="secondary">Next →</button>
+  </div>
+</section>
+<div id="status" class="status"></div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
