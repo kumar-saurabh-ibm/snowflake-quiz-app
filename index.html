@@ -1,36 +1,183 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Snowflake Quiz</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Certification Quiz App">
+  <title>QuizLab — Certification Quiz</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main class="app">
-<header class="top">
-  <div><div class="eyebrow">CERTIFICATION PRACTICE</div><h1>Snowflake Quiz</h1></div>
-  <div class="counter" id="counter">Loading…</div>
-</header>
-<div class="track"><div id="progress"></div></div>
-<section class="card">
-  <div class="label">QUESTION <span id="num">—</span></div>
-  <h2 id="question">Loading questions…</h2>
-  <div id="selectionHint" class="selectionHint"></div>
-  <div id="options" class="options"></div>
-  <div id="answerPanel" class="answer hidden">
-    <div class="answerTitle"><span>✓</span> Correct Answer</div>
-    <div id="correct" class="correct"></div>
-    <div id="explanation" class="explanation"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">Q</div>
+        <div>
+          <h1>QuizLab</h1>
+          <span>Certification practice</span>
+        </div>
+      </div>
+      <button id="restartBtn" class="ghost-btn hidden">Restart</button>
+    </header>
+
+    <main>
+      <!-- SETUP -->
+      <section id="setupScreen" class="screen">
+        <div class="hero">
+          <span class="eyebrow">ASSESSMENT MODE</span>
+          <h2>Build your test.</h2>
+          <p>Choose your topics, question count, timer, and when answers should be revealed.</p>
+        </div>
+
+        <div class="setup-grid">
+          <section class="card topics-card">
+            <div class="section-heading">
+              <div>
+                <span class="step">01</span>
+                <h3>Topics</h3>
+              </div>
+              <span id="topicCount" class="muted">Loading…</span>
+            </div>
+
+            <div id="topics" class="topic-list">
+              <div class="loading">Loading available topics…</div>
+            </div>
+            <div id="setupError" class="error-box hidden"></div>
+          </section>
+
+          <section class="card settings-card">
+            <div class="section-heading">
+              <div>
+                <span class="step">02</span>
+                <h3>Test settings</h3>
+              </div>
+            </div>
+
+            <label class="field-label" for="questionCount">Number of questions</label>
+            <div class="number-control">
+              <button type="button" id="minusBtn" aria-label="Decrease question count">−</button>
+              <input id="questionCount" type="number" min="1" value="10" inputmode="numeric">
+              <button type="button" id="plusBtn" aria-label="Increase question count">+</button>
+            </div>
+            <p id="availableCount" class="field-help">Select topics to see available questions.</p>
+
+            <div class="setting-block">
+              <span class="field-label">Test mode</span>
+              <div class="choice-grid">
+                <label class="choice">
+                  <input type="radio" name="timerMode" value="none" checked>
+                  <span><strong>Untimed</strong><small>No time limit</small></span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="timerMode" value="timed">
+                  <span><strong>Timed</strong><small>Choose duration</small></span>
+                </label>
+              </div>
+            </div>
+
+            <div id="timerSettings" class="setting-block hidden">
+              <label class="field-label" for="timerMinutes">Time limit (minutes)</label>
+              <input id="timerMinutes" class="text-input" type="number" min="1" max="600" value="30">
+            </div>
+
+            <div class="setting-block">
+              <span class="field-label">Answer visibility</span>
+              <div class="choice-grid">
+                <label class="choice">
+                  <input type="radio" name="answerMode" value="end" checked>
+                  <span><strong>At the end</strong><small>Exam-style</small></span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="answerMode" value="instant">
+                  <span><strong>Instant</strong><small>After each question</small></span>
+                </label>
+              </div>
+            </div>
+
+            <button id="startBtn" class="primary-btn" disabled>Start test <span>→</span></button>
+          </section>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section id="quizScreen" class="screen hidden">
+        <div class="quiz-head">
+          <div>
+            <span id="quizTopics" class="eyebrow"></span>
+            <h2 id="progressText">Question 1 of 10</h2>
+          </div>
+          <div class="quiz-meta">
+            <div id="timerBox" class="timer hidden">00:00</div>
+            <div id="scoreLive" class="score-live">0 correct</div>
+          </div>
+        </div>
+
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <article class="card question-card">
+          <div class="question-top">
+            <span id="questionType" class="question-type">Single answer</span>
+            <span id="questionNumber" class="muted">01</span>
+          </div>
+          <h3 id="questionText"></h3>
+          <p id="multipleHint" class="question-hint hidden">Select all answers that apply.</p>
+          <div id="options" class="options"></div>
+
+          <div id="instantFeedback" class="feedback hidden"></div>
+          <div id="explanation" class="explanation hidden">
+            <div class="explanation-title">Explanation</div>
+            <div id="explanationText"></div>
+          </div>
+          <button class="primary-btn" id="show-answer">Show Answer</div>
+          <div class="quiz-actions">
+            <button id="prevBtn" class="secondary-btn">← Previous</button>
+            <button id="nextBtn" class="primary-btn">Next <span>→</span></button>
+          </div>
+        </article>
+      </section>
+
+      <!-- RESULTS -->
+      <section id="resultsScreen" class="screen hidden">
+        <div class="hero result-hero">
+          <span class="eyebrow">TEST COMPLETE</span>
+          <h2 id="resultTitle">Your results</h2>
+          <p id="resultSubtitle"></p>
+        </div>
+
+        <div class="result-grid">
+          <div class="card score-card">
+            <div class="score-ring">
+              <span id="finalPercent">0%</span>
+            </div>
+            <div>
+              <div id="finalScore" class="big-score">0 / 0</div>
+              <div class="muted">correct answers</div>
+            </div>
+          </div>
+          <div class="card stats-card">
+            <div><span>Correct</span><strong id="correctStat">0</strong></div>
+            <div><span>Incorrect</span><strong id="incorrectStat">0</strong></div>
+            <div><span>Unanswered</span><strong id="unansweredStat">0</strong></div>
+          </div>
+        </div>
+
+        <div class="card review-card">
+          <div class="section-heading">
+            <div>
+              <span class="step">REVIEW</span>
+              <h3>Question review</h3>
+            </div>
+          </div>
+          <div id="reviewList" class="review-list"></div>
+        </div>
+
+        <button id="takeAgainBtn" class="primary-btn result-btn">Take another test <span>→</span></button>
+      </section>
+    </main>
   </div>
-  <div class="actions">
-    <button id="prev" class="secondary">← Previous</button>
-    <button id="show" class="primary">Show Answer</button>
-    <button id="next" class="secondary">Next →</button>
-  </div>
-</section>
-<div id="status" class="status"></div>
-</main>
-<script src="app.js"></script>
+
+  <script src="app.js"></script>
 </body>
 </html>
