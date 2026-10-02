@@ -26,6 +26,15 @@ const screens = {
 };
 
 function showScreen(name) {
+  // Hide or show the next/prev buttons based on the screen
+  if(name == 'setup' || name == 'results') {
+    $('nextBtn').classList.add('hidden');
+    $('prevBtn').classList.add('hidden');
+  } else {
+    $('nextBtn').classList.remove('hidden');
+    $('prevBtn').classList.remove('hidden');
+  }
+
   Object.values(screens).forEach(s => s.classList.add("hidden"));
   screens[name].classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -434,5 +443,9 @@ document.querySelectorAll('input[name="timerMode"]').forEach(input => {
     $("timerSettings").classList.toggle("hidden", input.value !== "timed" || !input.checked);
   });
 });
+
+// Initially diable the next and previous buttons until the quiz starts
+  $('nextBtn').classList.add('hidden');
+  $('prevBtn').classList.add('hidden');
 
 loadCategories();
